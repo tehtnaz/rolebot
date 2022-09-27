@@ -1,13 +1,11 @@
 {
-    "token": "NaN",
-    "app_id": "NaN",
+    "token": "MTAyNDQyOTI2NDQyNDE1MzIwMQ.GT396g.-FG-fuwCLUI8Ru60weeQzNBMyKkqJuW8GPUp5Y",
+    "app_id": "1024429264424153201",
     
-    "app_id_beta": "NaN",
-    "token_beta": "NaN",
+    "token_beta": "ODY2MDQwOTg4NTg5MzU5MTQ0.YPMxhQ.s2fJKtc1zLQ1mbiJ2CL7n4H9YJA",
+    "app_id_beta": "866040988589359144",
     
     "dev_server_id" : "893716646953365515",
 
     "debug": true
-    
-    
 }
