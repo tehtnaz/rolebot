@@ -103,7 +103,12 @@ client.on("messageReactionAdd", async (messageReaction) =>{
         console.log("Found database entry");
         if(messageReaction.count >= voteRole.votes_needed){
             try{
-                await messageReaction.message.member?.roles.add(voteRole.role_id);
+                const member = messageReaction.message.member;
+                if(member?.user.bot) {
+                    console.log("user was bot... skipping");
+                    return;
+                }
+                await member?.roles.add(voteRole.role_id);
                 messageReaction.message.reply("new role");
             }catch(err){
                 console.error("Error while attempting to add role: ", err);
