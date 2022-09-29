@@ -1,7 +1,7 @@
 # rolebot
 
 1. remember to `npm install` in root dir
-2. then `tsc`
+2. then compile typescript with `tsc`
 3. puis `node .`
 
 
