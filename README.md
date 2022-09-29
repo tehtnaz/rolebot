@@ -1,11 +1,11 @@
 # rolebot
 
-remember to `npm install` in root dir
-then `tsc`
-puis `node .`
+1. remember to `npm install` in root dir
+2. then `tsc`
+3. puis `node .`
 
 
-remember to recreate config.json
+4. remember to recreate config.json
 ```json
 {
     "token": "TOKEN",
