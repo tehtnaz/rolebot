@@ -4,10 +4,8 @@
 
 1. remember to `npm install` in root dir
 2. then compile typescript with `tsc`
-3. puis `node .`
 
-
-4. remember to recreate config.json
+3. remember to recreate config.json
 ```json
 {
     "token": "TOKEN",
@@ -23,3 +21,9 @@
 ```
 when debug mode is `true`, `token_beta` and `app_id_beta` are used
 add the ID of a server to test the commands (this is mandatory)
+
+
+
+**run the bot with** `node .`
+
+nothing too complicated
