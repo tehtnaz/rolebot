@@ -1,6 +1,6 @@
 # rolebot (temporary name, im lazy)
 
-**This code was literally written in 3 hours. Expect it to be lazy. I'll clean it up over time**
+**This code was literally written in 3 hours. Expect it to be shoddy. I'll clean it up over time**
 
 1. remember to `npm install` in root dir
 2. then compile typescript with `tsc`
