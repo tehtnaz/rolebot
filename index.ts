@@ -114,7 +114,6 @@ client.on("messageReactionAdd", async (messageReaction) =>{
     }
 });
 
-
 process.on("uncaughtException", () =>{
     if(!config.debug){
         const d = new Date();
