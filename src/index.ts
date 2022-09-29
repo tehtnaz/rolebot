@@ -3,10 +3,6 @@ import { Sequelize } from "sequelize";
 import { VoteRole } from "./models/VoteRole.js";
 import fs from 'fs';
 
-//for debug
-//import config from './config.json';
-
-//for release
 const config = JSON.parse(fs.readFileSync("./config.json").toString());
 
 // init database
@@ -17,7 +13,7 @@ const sequelize = new Sequelize('database', 'username', 'password', {
 	storage: 'database.sqlite',
 });
 
-// new Client
+// client + intents
 const intents_array = [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessageReactions, GatewayIntentBits.GuildMessages];
 const partials_array = [Partials.Message, Partials.Channel, Partials.Reaction];
 const client = new Client({ intents: intents_array, partials: partials_array});
@@ -26,7 +22,7 @@ const client = new Client({ intents: intents_array, partials: partials_array});
 if(config.debug) client.login(config.token_beta);
 else client.login(config.token);
 
-// cache commands
+// import commands
 const commandCollection = new Collection<string, (interaction: ChatInputCommandInteraction) => Promise<void>>();
 const commandFiles: Array<string> = fs.readdirSync("./commands").filter((file: string) => file.endsWith(".js"));
 for(const file of commandFiles){
@@ -36,6 +32,7 @@ for(const file of commandFiles){
     });
 }
 
+// init db + log activity
 client.once("ready", async () => {
     if(config.debug) {
         console.log("Started roleBot v0.1.dev in DEBUG MODE");
@@ -50,6 +47,7 @@ client.once("ready", async () => {
     }
     VoteRole.m_init(sequelize);
 });
+
 
 client.on("interactionCreate", async (interaction) => {
     if(!interaction.isChatInputCommand()) {console.log("is not command"); return;}
@@ -79,6 +77,7 @@ client.on("interactionCreate", async (interaction) => {
         }
     }
 });
+
 client.on("messageReactionAdd", async (messageReaction) =>{
     console.log("reaction added");
     if(messageReaction.partial){
