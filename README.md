@@ -1,7 +1,8 @@
 # rolebot (temporary name, im lazy)
 
 **This code was literally written in 3 hours. Expect it to be shoddy. I'll clean it up over time**
-*made with node 18, not tested with any others*
+
+***!! Made with node 18, not tested with any others!! ***
 
 1. remember to `npm install` in root dir
 2. then compile typescript with `tsc`
