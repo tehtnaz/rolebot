@@ -1,8 +1,11 @@
-import { ChatInputCommandInteraction, Client, Collection, GatewayIntentBits, IntentsBitField, Interaction, MessageReaction, Partials } from "discord.js";
+import { ChatInputCommandInteraction, Client, Collection, GatewayIntentBits, Partials } from "discord.js";
 import { Sequelize } from "sequelize";
 import { VoteRole } from "./models/VoteRole.js";
 import fs from 'fs';
+import { logDebug, logError, logInfo } from "./helpers/console-prefixes.js";
+import chalk from "chalk";
 
+//import config from "./config.json" assert {type: 'json'};
 const config = JSON.parse(fs.readFileSync("./config.json").toString());
 
 // init database
@@ -13,14 +16,11 @@ const sequelize = new Sequelize('database', 'username', 'password', {
 	storage: 'database.sqlite',
 });
 
-// client + intents
+// client creation with intents + login 
 const intents_array = [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessageReactions, GatewayIntentBits.GuildMessages];
 const partials_array = [Partials.Message, Partials.Channel, Partials.Reaction];
-const client = new Client({ intents: intents_array, partials: partials_array});
-
-// login
-if(config.debug) client.login(config.token_beta);
-else client.login(config.token);
+const client = new Client({ intents: intents_array, partials: partials_array });
+client.login(config.token);
 
 // import commands
 const commandCollection = new Collection<string, (interaction: ChatInputCommandInteraction) => Promise<void>>();
@@ -32,96 +32,102 @@ for(const file of commandFiles){
     });
 }
 
+
 // init db + log activity
+export const sb_version = "v0.1.0";
 client.once("ready", async () => {
     if(config.debug) {
-        console.log("Started roleBot v0.1.dev in DEBUG MODE");
+        logInfo("index.js", `Started soundbot ${sb_version}${chalk.redBright("-DEV")} in ${chalk.bgYellowBright("DEBUG MODE")}`);
     }
     else {
-        console.log("Started roleBot v0.1.0 in OFFICIAL mode");
+        logInfo("index.js", `Started soundbot ${sb_version} in ${chalk.bgBlueBright("OFFICIAL mode")}`);
         const d = new Date();
         const printStr = `-------------------------\n    @@@@ Bot went online at: ${d.toDateString()}, ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}\n`;
         fs.appendFile("activity.txt", printStr, (err) =>{
-            if(err) console.log(err);
+            if(err) logError("index.js", err);
         })
     }
     VoteRole.m_init(sequelize);
 });
 
 
+//do i really need a comment here?
+
+//receives commands
 client.on("interactionCreate", async (interaction) => {
-    if(!interaction.isChatInputCommand()) {console.log("is not command"); return;}
+    if(!interaction.isChatInputCommand()) {logError("index.js", "Somehow received a non-ChatInputCommand, ignoring..."); return;}
 
     if(interaction.guild === null){
         await interaction.reply("You must be in a guild to use commands!");
         return;
     }
     try {
-        if(interaction.isChatInputCommand()){
-            console.log("received: " + interaction.commandName);
-            const command = commandCollection.get(interaction.commandName);
-            if(!command)return;
-            await command(interaction);
-        }else{
-            //await search_command.receiveSelectMenu(interaction, serverQueue);
-        }
+        logDebug("index.js", "received: " + interaction.commandName);
+        const command = commandCollection.get(interaction.commandName);
+        if(!command)return;
+        await command(interaction);
     } catch (err){
-        console.error(err);
+        logError("index.js", err);
         try{
             if(!interaction.replied)
                 await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
             else
                 await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
         }catch(err){
-            console.log(err);
+            logError("index.js", err);
         }
     }
 });
 
+
+//this should be obvious - "messageReactionAdd"
 client.on("messageReactionAdd", async (messageReaction) =>{
-    console.log("reaction added");
+    logDebug("index.js", "Reaction added");
     if(messageReaction.partial){
         try{
-            
             await messageReaction.fetch();
-            console.log("fetched msg");
+            logDebug("index.js", "fetched msg");
+
         }catch(err){
-            console.error("Error while fetching the message: ", err);
+            logError("index.js", "Error while fetching the message");
+            logError("index.js", err);
             return;
         }
     }
     if(messageReaction.message.guildId === null){
-        console.log("Reaction was not in a server...");
+        logDebug("index.js", "Reaction was not in a server...");
         return;
     }
-    const voteRole = await VoteRole.findOne({where: {server_id: messageReaction.message.guildId, reaction_id: messageReaction.emoji.id}}).catch(() =>{
-        console.log("promise rejected");
-    });
+    const member = messageReaction.message.member;
+    if(member?.user.bot) {
+        logDebug("index.js", "User was bot... skipping");
+        return;
+    }
+
+    const voteRole = await VoteRole.findOne({where: {server_id: messageReaction.message.guildId, reaction_id: messageReaction.emoji.id}}).catch(() =>
+        logError("index.js", "Promise rejected (Is the database synced yet?)"));
+
     //console.log(voteRole);
     if(voteRole && messageReaction.count){
-        console.log("Found database entry");
+        logDebug("index.js", "Found database entry");
         if(messageReaction.count >= voteRole.votes_needed){
             try{
-                const member = messageReaction.message.member;
-                if(member?.user.bot) {
-                    console.log("user was bot... skipping");
-                    return;
-                }
                 await member?.roles.add(voteRole.role_id);
                 messageReaction.message.reply("new role");
             }catch(err){
-                console.error("Error while attempting to add role: ", err);
+                logError("index.js", "Error while attempting to add role");
+                logError("index.js", err);
             }
         }
     }else{
-        console.log("Could not find database entry for reaction");
+        logDebug("index.js", "Could not find database entry for reaction");
     }
 });
 
 process.on("uncaughtException", () =>{
     if(!config.debug){
         const d = new Date();
-        const printStr = `    %%%% Bot went offline at: ${d.toDateString()}, ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}\n`;
+        const printStr = `    !!!! Bot had uncuaght exception at: ${d.toDateString()}, ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}\n`;
         fs.appendFileSync("activity.txt", printStr)
     }
 })
