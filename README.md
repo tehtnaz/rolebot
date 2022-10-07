@@ -7,7 +7,7 @@
 1. remember to `npm install` in root dir
 2. then compile typescript with `tsc`
 
-3. remember to recreate config.json
+3. remember to recreate config.json (place it in the root directory ie. the path you're running the script from)
 ```json
 {
     "token": "TOKEN",
