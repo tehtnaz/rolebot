@@ -26,6 +26,6 @@ dev_server_id is the ID of a server for having the commands applied instantly (s
 debug - only set to true if you want to enable debug logging
 
 
-**run the bot with** `node .`
+**run the bot with** `node .` or run the actual entry point file `node ./index.js`
 
 nothing too complicated
