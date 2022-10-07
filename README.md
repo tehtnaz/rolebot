@@ -19,8 +19,10 @@
 }
 ```
 app_id - ID of the bot / application ID
+
 dev_server_id is the ID of a server for having the commands applied instantly (sometimes, you the other request will get rate limited, this server won't)
   <-- YOU MUST HAVE A DEV SERVER ID
+
 debug - only set to true if you want to enable debug logging
 
 
