@@ -18,8 +18,8 @@
     "debug": false
 }
 ```
-when debug mode is `true`, `token_beta` and `app_id_beta` are used
-add the ID of a server to test the commands (this is mandatory)
+dev_server_id is the ID of a server for having the commands applied instantly (sometimes, you the other request will get rate limited, this server won't)
+^^THIS IS MANDATORY^^
 
 
 
