@@ -13,9 +13,6 @@
     "token": "TOKEN",
     "app_id": "ID",
     
-    "token_beta": "TOKEN_BETA",
-    "app_id_beta": "ID_BETA",
-    
     "dev_server_id" : "DEV_SERVER",
 
     "debug": false
