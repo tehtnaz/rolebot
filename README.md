@@ -3,7 +3,7 @@
 ***!! Made with node 18, not tested with any others!!***
 
 1. remember to `npm install` in root dir
-2. then compile typescript with `tsc`
+2. then compile typescript to javascript with `tsc`
 
 3. remember to recreate config.json. Place it in the root directory (ie. the path you're running the script from)
 ```json
