@@ -12,9 +12,8 @@ import chalk from "chalk";
 
 /// TODO
 
-/// MAKE /list!!!
-/// MAKE /remove_vote_role!!!
-
+/// ADD ADMIN ONLY PERMISSIONS
+/// FIX /list!!! (overloads at embed limit)
 
 
 

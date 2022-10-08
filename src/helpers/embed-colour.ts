@@ -1,0 +1,1 @@
+export const DefaultEmbedColour = "#006B76"

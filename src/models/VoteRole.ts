@@ -51,3 +51,6 @@ export async function AddReactionID(server_id: string, role_id: string, reaction
         return false;
     }
 }
+export async function DeleteVoteRole(server_id: string, role_id: string) {
+    VoteRole.destroy({where: {server_id: server_id, role_id: role_id}});
+}
