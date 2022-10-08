@@ -5,6 +5,23 @@ import fs from 'fs';
 import { logDebug, logError, logInfo } from "./helpers/console-prefixes.js";
 import chalk from "chalk";
 
+
+
+
+
+
+/// TODO
+
+/// MAKE /list!!!
+/// MAKE /remove_vote_role!!!
+
+
+
+
+
+
+
+
 //import config from "./config.json" assert {type: 'json'};
 const config = JSON.parse(fs.readFileSync("./config.json").toString());
 
@@ -115,7 +132,7 @@ client.on("messageReactionAdd", async (messageReaction) =>{
                 await member?.roles.add(voteRole.role_id);
                 messageReaction.message.reply("new role");
             }catch(err){
-                logError("index.js", "Error while attempting to add role");
+                logError("index.js", "Error while attempting to add role | guildID: " + member?.guild.id + " | roleID: " + voteRole.role_id);
                 logError("index.js", err);
             }
         }

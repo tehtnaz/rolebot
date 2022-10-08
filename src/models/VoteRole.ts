@@ -30,7 +30,13 @@ export class VoteRole extends Model<InferAttributes<VoteRole>, InferCreationAttr
 
 export async function RegisterRoleID(server_id: string, role_id: string, votes_needed: number): Promise<boolean> {
     try{
-        VoteRole.create({server_id: server_id, role_id: role_id, votes_needed: votes_needed, reaction_id: null});
+        const wasFound = await VoteRole.findOne({where: {server_id: server_id, role_id: role_id}});
+        if(wasFound === null)
+            VoteRole.create({server_id: server_id, role_id: role_id, votes_needed: votes_needed, reaction_id: null});
+        else{
+            wasFound.votes_needed = votes_needed;
+            wasFound.reaction_id = null;
+        }
         return true;
     }catch{
         return false;
